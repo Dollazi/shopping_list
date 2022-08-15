@@ -1,6 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_list/cart_model.dart';
+import 'package:shopping_list/cart_provider.dart';
+import 'package:shopping_list/db_helper.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({Key? key}) : super(key: key);
@@ -10,6 +14,8 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+  DBHelper? dbHelper = DBHelper();
+
   List<String> productName = [
     'Manga',
     'Laranja',
@@ -38,33 +44,42 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista de produtos'),
         centerTitle: true,
         actions: [
-          Center(
-            child: Badge(
-              badgeContent: Text(
-                '0',
-                style: TextStyle(color: Colors.white),
+          InkWell(
+            onTap: () {
+              //Navigator.push(context,MaterialPageRoute(builder: (context) => CartScreen()));
+            },
+            child: Center(
+              child: Badge(
+                showBadge: true,
+                badgeContent: Consumer<CartProvider>(
+                  builder: (context, value, child) {
+                    return Text(value.getCounter().toString(),
+                        style: TextStyle(color: Colors.white));
+                  },
+                ),
+                animationType: BadgeAnimationType.fade,
+                animationDuration: Duration(milliseconds: 300),
+                child: Icon(Icons.shopping_bag_outlined),
               ),
-              animationDuration: Duration(milliseconds: 300),
-              child: Icon(Icons.shopping_bag_outlined),
             ),
           ),
-          //Icon(Icons.shopping_bag_outlined),
           SizedBox(width: 20.0)
         ],
       ),
       body: Column(
         children: [
           Expanded(
-              child: ListView.builder(
-                  itemCount: productName.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                        child: Padding(
+            child: ListView.builder(
+                itemCount: productName.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -102,27 +117,86 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                       productUnit[index].toString() +
                                           " " +
                                           r"R$" +
-                                          " " +
                                           productPrice[index].toString(),
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500),
                                     ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
                                     Align(
                                       alignment: Alignment.centerRight,
-                                      child: Container(
+                                      child: InkWell(
+                                        onTap: () {
+                                          print(index);
+                                          print(index);
+                                          print(productName[index].toString());
+                                          print(productPrice[index].toString());
+                                          print(productPrice[index]);
+                                          print('1');
+                                          print(productUnit[index].toString());
+                                          print(productImage[index].toString());
+
+                                          dbHelper!
+                                              .insert(Cart(
+                                                  id: index,
+                                                  productId: index.toString(),
+                                                  productName:
+                                                      productName[index]
+                                                          .toString(),
+                                                  initialPrice:
+                                                      productPrice[index],
+                                                  productPrice:
+                                                      productPrice[index],
+                                                  quantity: 1,
+                                                  unitTag: productUnit[index]
+                                                      .toString(),
+                                                  image: productImage[index]
+                                                      .toString()))
+                                              .then((value) {
+                                            cart.addTotalPrice(double.parse(
+                                                productPrice[index]
+                                                    .toString()));
+                                            cart.addCounter();
+
+                                            final snackBar = SnackBar(
+                                              backgroundColor: Colors.green,
+                                              content: Text(
+                                                  'Produto foi adicionado ao carrinho'),
+                                              duration: Duration(seconds: 1),
+                                            );
+
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
+                                          }).onError((error, stackTrace) {
+                                            print("error" + error.toString());
+                                            final snackBar = SnackBar(
+                                                backgroundColor: Colors.red,
+                                                content: Text(
+                                                    'Produto já está adicionado ao carrinho'),
+                                                duration: Duration(seconds: 1));
+
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
+                                          });
+                                        },
+                                        child: Container(
                                           height: 35,
                                           width: 100,
                                           decoration: BoxDecoration(
                                               color: Colors.green,
                                               borderRadius:
                                                   BorderRadius.circular(5)),
-                                          child: Center(
-                                              child: Text(
-                                            'Add ao carrinho',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ))),
+                                          child: const Center(
+                                            child: Text(
+                                              'Add ao carrinho',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     )
                                   ],
                                 ),
@@ -131,8 +205,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           )
                         ],
                       ),
-                    ));
-                  }))
+                    ),
+                  );
+                }),
+          ),
         ],
       ),
     );
