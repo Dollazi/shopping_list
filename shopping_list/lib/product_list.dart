@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_list/cart_model.dart';
 import 'package:shopping_list/cart_provider.dart';
