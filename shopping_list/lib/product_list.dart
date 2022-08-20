@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_list/cart_model.dart';
 import 'package:shopping_list/cart_provider.dart';
+import 'package:shopping_list/cart_screen.dart';
 import 'package:shopping_list/db_helper.dart';
 
 class ProductListScreen extends StatefulWidget {
@@ -24,12 +25,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
     'Pessêgo',
   ];
   List<String> productUnit = [
-    'KG',
-    'Dozen',
-    'KG',
-    'Dozen',
-    'KG',
-    'KG',
+    'Kg',
+    'Dúzia',
+    'Kg',
+    'Dúzia',
+    'Kg',
+    'Kg',
   ];
   List<int> productPrice = [10, 20, 30, 40, 50, 60, 70];
   List<String> productImage = [
@@ -51,7 +52,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
         actions: [
           InkWell(
             onTap: () {
-              //Navigator.push(context,MaterialPageRoute(builder: (context) => CartScreen()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CartScreen()));
             },
             child: Center(
               child: Badge(
@@ -162,7 +164,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                             final snackBar = SnackBar(
                                               backgroundColor: Colors.green,
                                               content: Text(
-                                                  'Produto foi adicionado ao carrinho'),
+                                                  'Product is added to cart'),
                                               duration: Duration(seconds: 1),
                                             );
 
@@ -173,7 +175,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                             final snackBar = SnackBar(
                                                 backgroundColor: Colors.red,
                                                 content: Text(
-                                                    'Produto já está adicionado ao carrinho'),
+                                                    'Product is already added in cart'),
                                                 duration: Duration(seconds: 1));
 
                                             ScaffoldMessenger.of(context)
@@ -189,7 +191,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                                   BorderRadius.circular(5)),
                                           child: const Center(
                                             child: Text(
-                                              'Add ao carrinho',
+                                              'Add to cart',
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),
