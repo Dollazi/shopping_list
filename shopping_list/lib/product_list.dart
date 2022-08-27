@@ -164,7 +164,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                             final snackBar = SnackBar(
                                               backgroundColor: Colors.green,
                                               content: Text(
-                                                  'Product is added to cart'),
+                                                  'Produto adicionado ao carrinho'),
                                               duration: Duration(seconds: 1),
                                             );
 
@@ -175,7 +175,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                             final snackBar = SnackBar(
                                                 backgroundColor: Colors.red,
                                                 content: Text(
-                                                    'Product is already added in cart'),
+                                                    'Produto já adicionado ao carrinho'),
                                                 duration: Duration(seconds: 1));
 
                                             ScaffoldMessenger.of(context)
@@ -191,7 +191,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                                   BorderRadius.circular(5)),
                                           child: const Center(
                                             child: Text(
-                                              'Add to cart',
+                                              'Adicionar',
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),
